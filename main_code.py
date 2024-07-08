@@ -1,8 +1,8 @@
 import pygame
 import config
 import random
-from classes import Board, Button, Pieces, Random_Square, Find_Square_Response, Score, GameState, Name_Square_Response,Timer, After_Game_Msg
-from classes import Time_Bar
+from classes import Board, Button, Pieces, RandomSquare, FindSquareResponse, Score, GameState, NameSquareResponse,Timer, AfterGameMsg
+from classes import TimeBar
 
 pygame.init()
 screen = pygame.display.set_mode([config.WIDTH,config.HEIGHT])
@@ -62,21 +62,21 @@ while run:
                         print("---------------------------------------------")
                         if board.get_random_side() == True:
                                     board.set_board_side(random.choice(['white', 'black']))   
-                        random_square = Random_Square(board.get_board_side())
+                        random_square = RandomSquare(board.get_board_side())
                         print(f"Initial square: {random_square.get_square()}")
 
                         if find_square_button.get_clicked():
                                 score = Score("find_square")
                                 timer = Timer("find_square")
-                                time_bar = Time_Bar("find_square", config.time_limit)
+                                time_bar = TimeBar("find_square", config.time_limit)
                                 game_state.start_timer_find_square()
 
                         elif name_square_button.get_clicked():
                                 score = Score("name_square")
                                 timer = Timer("name_square")
-                                time_bar = Time_Bar("name_square", config.time_limit)
+                                time_bar = TimeBar("name_square", config.time_limit)
                                 game_state.start_timer_name_square()
-                                name_square_response = Name_Square_Response(correct_square=random_square.get_square())
+                                name_square_response = NameSquareResponse(correct_square=random_square.get_square())
                                 game_state.set_allowed_to_read_input(True)
                         game_state.set_after_game_msg(False)        
 
@@ -124,11 +124,11 @@ while run:
                             if board.click_within_board(click_x, click_y):
                                 if random_square.click_within_square(click_x, click_y):
 
-                                                find_square_response = Find_Square_Response(True, click_x, click_y)
+                                                find_square_response = FindSquareResponse(True, click_x, click_y)
                                                 score.update_score()            
                                                 print(f"score is {score.get_score()}")                                
                                 else:
-                                                find_square_response = Find_Square_Response(False,click_x, click_y)
+                                                find_square_response = FindSquareResponse(False,click_x, click_y)
                                                 
                                 game_state.set_click_find_square(True)    
         
@@ -182,7 +182,7 @@ while run:
                                         board.set_board_side(random.choice(["white", "black"]))   
                                             
                                     pieces.draw(screen,board.get_board_side())                               
-                                    random_square = Random_Square(board.get_board_side()) 
+                                    random_square = RandomSquare(board.get_board_side()) 
                                     print(f"Random coord {random_square.get_square()}")
                                     random_square.draw_coord(screen)  
                                     pygame.display.update()
@@ -210,7 +210,7 @@ while run:
                                         board.set_board_side(random.choice(["white", "black"]))   
                                             
                                     pieces.draw(screen,board.get_board_side())                               
-                                    random_square = Random_Square(board.get_board_side()) 
+                                    random_square = RandomSquare(board.get_board_side()) 
                                     print(f"Random square {random_square.get_square()}")
                                     name_square_response.set_correct_square(random_square.get_square())
                                     random_square.draw_frame_around_square(screen)
@@ -231,7 +231,7 @@ while run:
                     game_state.set_allowed_to_read_input(False)
                     print("Time is up!")        
                     print(f"score is {score.get_score()} ") 
-                    after_game_msg = After_Game_Msg(score.get_score())
+                    after_game_msg = AfterGameMsg(score.get_score())
                     game_state.set_after_game_msg(True)
 
 

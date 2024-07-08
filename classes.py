@@ -172,7 +172,7 @@ class Pieces:
                     screen.blit(seventh_row_pawns, (board_left_top_x + square_length * i + 2, board_left_top_y + square_length))       
 
 
-class Random_Square:
+class RandomSquare:
     def __init__(self, board_side):
             self.board_side = board_side
             self.square=''
@@ -243,7 +243,7 @@ def squares_coord(board_side, board_left_top_x = config.board_left_top_x, board_
         return squares_coord                
 
 
-class Find_Square_Response:
+class FindSquareResponse:
     def __init__(self, was_correct_square_guessed, click_x, click_y):
           self.correct_square_answered = was_correct_square_guessed
           self.click_x = click_x
@@ -400,7 +400,7 @@ class GameState:
         def set_after_game_msg(self, bool_value):
               self.after_game_msg = bool_value      
 
-class Name_Square_Response(Drawable):
+class NameSquareResponse(Drawable):
         def __init__(self, correct_square="", input_answer=""):
             self.correct_square = correct_square
             self.input_answer = input_answer 
@@ -497,7 +497,7 @@ class Timer(Drawable):
       def set_time(self, time):
             self.time = time            
 
-class After_Game_Msg(Drawable):
+class AfterGameMsg(Drawable):
         def __init__(self, score):
             self.score = score            
             self.init_drawing_details()
@@ -519,7 +519,7 @@ class After_Game_Msg(Drawable):
                          self.top_left_y, self.width, self.height, self.text_color, self.border_thickness, self.border_color)
                 
 
-class Time_Bar:
+class TimeBar:
         def __init__(self, which_game, time_left):
             self.bar_top_left_x = config.board_left_top_x
             self.bar_top_left_y =  config.board_left_top_y + config.board_length + 16
