@@ -297,7 +297,7 @@ class Score(Drawable):
         def init_drawing_details(self):
             if self.which_game == "find_square":
                 self.background_color='darkgreen'
-                self.top_left_y= config.highest_button_top_left_y + 3*(60+16)
+                self.top_left_y= config.find_square_score_top_left_y
                 self.width= 340
                 self.height= 120
                 self.text_color = 'black'
@@ -306,7 +306,7 @@ class Score(Drawable):
 
             elif self.which_game == "name_square":
                 self.background_color = 'navy'
-                self.top_left_y= config.highest_button_top_left_y + 3*(60+16) + 120+16
+                self.top_left_y= config.name_square_response_top_left_y+ 120+16
                 self.width= 340/2.0
                 self.height= 120
                 self.text_color = 'black'     
@@ -414,7 +414,7 @@ class Name_Square_Response(Drawable):
                 self.background_color='navy'
                 self.frame_thickness = 1
                 self.top_left_x = 30
-                self.top_left_y= config.highest_button_top_left_y + 3*(60+16)
+                self.top_left_y= config.name_square_response_top_left_y
                 self.width= 340
                 self.height= 120
                 self.text_color = 'black'
@@ -473,7 +473,7 @@ class Timer(Drawable):
             if self.which_game == "find_square":
                 self.background_color=  "darkgreen" #"olive"
                 self.top_left_x = 30
-                self.top_left_y= config.highest_button_top_left_y + 3*(60+16)+ 120+16
+                self.top_left_y = config.find_square_score_top_left_y + 120+16
                 self.width= 340
                 self.height= 120
                 self.text_color = 'black'
@@ -483,7 +483,7 @@ class Timer(Drawable):
             elif self.which_game == "name_square":
                 self.background_color= 'navy'
                 self.top_left_x = 30 + 340/2.0
-                self.top_left_y= config.highest_button_top_left_y + 3*(60+16)+ 120+16
+                self.top_left_y= config.name_square_response_top_left_y + 120+16
                 self.width= 340/2.0
                 self.height= 120
                 self.text_color = 'black'   
@@ -517,3 +517,30 @@ class After_Game_Msg(Drawable):
                 to_draw=f"Time is up! Your score is {self.score}"
                 super().draw(screen, to_draw, self.background_color, self.frame_thickness, self.top_left_x,
                          self.top_left_y, self.width, self.height, self.text_color, self.border_thickness, self.border_color)
+                
+
+class Time_Bar:
+        def __init__(self, which_game, time_left):
+            self.bar_top_left_x = config.board_left_top_x
+            self.bar_top_left_y =  config.board_left_top_y + config.board_length + 16
+            self.original_bar_width = config.board_length
+            self.bar_height = 16  
+            self.which_game = which_game
+            self.time_left = time_left
+            self.init_bar_color()
+
+        def init_bar_color(self):
+              if self.which_game == "find_square":
+                    self.color = "darkgreen"
+                    self.border_color = "yellow"
+              elif self.which_game == "name_square":
+                    self.color = "navy"
+                    self.border_color = "purple"      
+
+        def draw(self, screen, time_left):
+            time_left = max(0, time_left)
+            self.dynamic_bar_width = int(((config.time_limit-time_left) / config.time_limit) * self.original_bar_width)
+            pygame.draw.rect(screen, self.color, (self.bar_top_left_x, self.bar_top_left_y, self.dynamic_bar_width , self.bar_height))
+            pygame.draw.rect(screen, self.border_color, (self.bar_top_left_x, self.bar_top_left_y, self.original_bar_width, self.bar_height), 2)
+
+

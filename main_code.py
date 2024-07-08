@@ -2,6 +2,7 @@ import pygame
 import config
 import random
 from classes import Board, Button, Pieces, Random_Square, Find_Square_Response, Score, GameState, Name_Square_Response,Timer, After_Game_Msg
+from classes import Time_Bar
 
 pygame.init()
 screen = pygame.display.set_mode([config.WIDTH,config.HEIGHT])
@@ -41,9 +42,9 @@ start_button= Button("START", color='firebrick',is_clicked=False,top_left_x = 30
 clock = pygame.time.Clock()
 game_state = GameState()
 # -------------------------------------------------------------------------------------------------------------
+frame = 0
 run=True
 while run:
-
     for event in pygame.event.get(): 
         if event.type == pygame.QUIT: 
             run = False
@@ -67,11 +68,13 @@ while run:
                         if find_square_button.get_clicked():
                                 score = Score("find_square")
                                 timer = Timer("find_square")
+                                time_bar = Time_Bar("find_square", config.time_limit)
                                 game_state.start_timer_find_square()
 
                         elif name_square_button.get_clicked():
                                 score = Score("name_square")
                                 timer = Timer("name_square")
+                                time_bar = Time_Bar("name_square", config.time_limit)
                                 game_state.start_timer_name_square()
                                 name_square_response = Name_Square_Response(correct_square=random_square.get_square())
                                 game_state.set_allowed_to_read_input(True)
@@ -89,7 +92,8 @@ while run:
                             else:
                                 name_square_button.set_clicked()
                                 find_square_button.unclick()  
-                            print(f"Board side: {board.get_board_side()}")    
+                            print(f"Board side: {board.get_board_side()}") 
+                            game_state.set_after_game_msg(False)   
                 
                     elif click_on_one_of_the_board_side_buttons(event.pos):
                             if white_board_button.button_clicked_fun(event.pos):
@@ -113,6 +117,8 @@ while run:
                                 board.set_random_side(False)
 
                             print(f"find square clicked: {find_square_button.get_clicked()}, name square clicked {name_square_button.get_clicked()}")
+                            game_state.set_after_game_msg(False)
+                            
                 else:
                     if find_square_button.get_clicked():
                             if board.click_within_board(click_x, click_y):
@@ -150,12 +156,15 @@ while run:
     pieces.draw(screen, board.get_board_side())
 
     if game_state.get_find_square_time_running() != game_state.get_name_square_time_running(): # xor
-            time_passed = clock.get_time()/1000 # in seconds which is 1/60 = 0.016 sec
+            time_passed = clock.get_time()/1000 # this is the time passed since the last frame. It is 1/60 = 0.016 sec
             time_left -= time_passed
             score.draw(screen)
             timer.set_time(time_left)
             timer.draw_time(screen)
-
+            time_bar.draw(screen, time_left)
+            
+            
+            
             if game_state.get_find_square_time_running():
                 if game_state.get_click_find_square() is False:    
                     random_square.draw_coord(screen)              
@@ -229,9 +238,7 @@ while run:
     else:
           if game_state.after_game_msg:
                 after_game_msg.draw_msg(screen)
-                
-            
-
+  
     pygame.display.flip()
     clock.tick(config.FPS)
 

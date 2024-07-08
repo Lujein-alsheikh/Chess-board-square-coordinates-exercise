@@ -16,14 +16,16 @@ pygame.font.init()
 font=pygame.font.Font('freesansbold.ttf', 20)
 big_font = pygame.font.Font('freesansbold.ttf', 150)
 
+# drawing the pieces
 image_size= (60,60)
 
-
 # The find square/name square buttons, the white/random/black buttons, and the start button all have height 60.
-# Margin between any two consecutive buttons, between the start button and the score frame, and between the score and timer is 16.
-highest_button_top_left_y = 98
+# Margin between any two consecutive buttons is 16.
+highest_button_top_left_y = 166 # this corresponds to the find/name square buttons
+find_square_score_top_left_y = 220
+name_square_response_top_left_y = 220
 
-time_limit = 10.0  # in seconds
+time_limit = 30.0  # in seconds
 FPS = 60
 
 
