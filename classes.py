@@ -4,16 +4,31 @@ import pygame
 import random
 from typing import Tuple, List, Dict
 
+''' Things to know that repeat often:
+    - In pygame, the coordinates of the top left corner of the screen are (0,0). To draw any rectangle (let it be board, button, ...,etc) we 
+    define its top left coordinates.
+    - if a button is already clicked on, let us call it 'activated'. Activated means that its .is_clicked attribute is set to True
+    and its color is changed. 
+'''
 
 class Board:
+   
     def __init__(
         self,
-        top_left_x: int = config.board_left_top_x,
-        top_left_y: int = config.board_left_top_y,
-        length: int = config.board_length,
+        top_left_x: float = config.board_left_top_x,
+        top_left_y: float = config.board_left_top_y,
+        length: float = config.board_length,
         side: str = "white",
-        random_side: bool = False,
+        random_side: bool = False
     ):
+        """
+        Args:
+            top_left_x (float, optional): The x coordinate of the top left corner of the board. In pygame, the top left corner of the screen is of coordinates (0,0). Defaults to config.board_left_top_x.
+            top_left_y (float, optional): The y coordinate of the top left corner of the board. Defaults to config.board_left_top_y.
+            length (float, optional): Defaults to config.board_length.
+            side (str, optional): Whether the player wants to see the board from white's or black's side. Defaults to "white".
+            random_side (bool, optional): whether the player has chosen the 'random side of board' option. Defaults to False.
+        """
         self.top_left_x = top_left_x
         self.top_left_y = top_left_y
         self.length = length
@@ -28,6 +43,9 @@ class Board:
         screen.blit(self.board_image, (self.top_left_x, self.top_left_y))
 
     def click_within_board(self, click_x: int, click_y: int) -> bool:
+        """ 
+        checks if a mouse click is within the board
+        """
         if (
             self.top_left_x <= click_x <= self.top_left_x + self.length
             and self.top_left_y <= click_y <= self.top_left_y + self.length
@@ -55,6 +73,7 @@ class Board:
 
 
 class Button:
+
     def __init__(
         self,
         text: str,
@@ -68,6 +87,12 @@ class Button:
         text_color: str = "black",
         font: pygame.font.Font = config.font,
     ):
+        """
+        Args:
+            text (str): The name of the button. Helps to differentiate between multiple buttons.
+            is_clicked (bool): whether it is clicked on or not
+            border_color (str, optional): color of border of the button. Defaults to "seashell".
+        """
         self.text = text
         self.color = color
         self.is_clicked = is_clicked
@@ -78,36 +103,46 @@ class Button:
 
     def draw(self, screen: pygame.surface.Surface):
         pygame.draw.rect(screen, self.color, self.rect)
+        # border_rect is a rectangle drawn around self.rect
         border_rect = self.rect.inflate(
             2, 2
-        )  # Expand the rectangle by 1 pixel on each side (addition of 2 pixels in total on each side.)
+        )  # It is defined by expanding the self.rect rectangle by 1 pixel on each side (addition of 2 pixels in total on each side)
         pygame.draw.rect(screen, self.border_color, border_rect, width=1)
-        # note that the width is of the border color which doesn't affect the coordinates of border_rect
+        # the width parameter is of the border color and doesn't affect the coordinates of border_rect
         text_surface = self.font.render(self.text, True, self.text_color)
         text_rect = text_surface.get_rect(
             center=(self.rect[0] + self.rect[2] // 2, self.rect[1] + self.rect[3] // 2)
         )
         screen.blit(text_surface, text_rect)
 
-    def button_clicked_fun(self, click_pos: Tuple[int, int]):
-        # click_pos is supposed to be a tuple because event.pos which is the input argument is a tuple.
+    def button_clicked_fun(self, click_pos: Tuple[int, int]) -> bool:
+        """
+        Args:
+            click_pos (Tuple[int, int]): is supposed to be a tuple because event.pos which is the input argument is a tuple.
+
+        Returns:
+            bool: whether the current click was on this button or not.
+        """
+        
         if self.rect.collidepoint(click_pos):
             return True
         else:
             return False
 
     def set_clicked(self):
+        """ Activate the button: Changes the .is_clicked status to True and changes the button's color """   
         self.is_clicked = True
         self.color = "firebrick"
         print(f"Button {self.text} set to clicked.")
 
     def unclick(self):
+        """ Deactivate the button: Changes the .is_clicked status to False and changes the button's color """
         self.is_clicked = False
         self.color = "dimgrey"
         print(f"Button {self.text} set to unclicked.")
 
     def get_clicked(self):
-        # print(f"Checking if Button {self.text} is clicked or not. clicked state is: {self.is_clicked}")
+        """ informs us if the button is activated or not """
         return self.is_clicked
 
 
@@ -263,6 +298,7 @@ class Pieces:
 
 class RandomSquare:
     def __init__(self, board_side: str):
+        # The attribute square is a string like a3 for example
         self.board_side = board_side
         self.square: str = ""
         self.square_top_left_x: int = 0
@@ -271,6 +307,7 @@ class RandomSquare:
         self.init_top_left_coord()
 
     def init_random_square(self):
+        """ sets the value of the attribute square to a random square like g4"""
         columns = ["a", "b", "c", "d", "e", "f", "g", "h"]
         rows = ["1", "2", "3", "4", "5", "6", "7", "8"]
         random_col = random.choice(columns)
