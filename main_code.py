@@ -27,7 +27,6 @@ def draw_all_buttons(screen):
     black_board_button.draw(screen)
     start_button.draw(screen)
 
-
 def click_on_find_or_name_square_buttons(click_pos):
     if find_square_button.button_clicked_fun(
         click_pos
@@ -35,7 +34,6 @@ def click_on_find_or_name_square_buttons(click_pos):
         return True
     else:
         return False
-
 
 def click_on_one_of_the_board_side_buttons(click_pos):
     if (
@@ -74,7 +72,7 @@ white_board_button = Button(
     is_clicked=True,
     top_left_x=30,
     top_left_y=config.highest_button_top_left_y + 60 + 16,
-    width=113.33,
+    width =113.33,
     height=60,
 )
 random_board_button = Button(
@@ -263,8 +261,8 @@ while run:
                 pygame.display.update()
             else:
                 if (
-                    find_square_response.get_correct_square_answered() # if correct_square was guessed
-                ):  
+                    find_square_response.get_correct_square_answered()  # if correct_square was guessed
+                ):
                     # The following three instructions are to draw a green frame around a correctly guessed square
                     find_square_response.draw_frame_around_square(
                         screen, board.get_board_side()
