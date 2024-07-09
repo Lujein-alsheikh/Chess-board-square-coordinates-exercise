@@ -323,7 +323,7 @@ class RandomSquare:
         screen: pygame.surface.Surface,
         square_length: int=config.square_length,
         color: str="navy",
-        border_thickness: int=4,
+        border_thickness:int =4,
     ):
         frame_rect = pygame.Rect(
             self.square_top_left_x, self.square_top_left_y, square_length, square_length
@@ -418,11 +418,11 @@ class Drawable:
         screen: pygame.surface.Surface,
         value_to_draw: str,
         background_color: str,
-        frame_thickness: int,
-        top_left_x: int,
-        top_left_y: int,
-        width: int,
-        height: int,
+        frame_thickness: float,
+        top_left_x: float,
+        top_left_y: float,
+        width: float,
+        height: float,
         text_color: str,
         border_thickness: int,
         border_color: str,
@@ -468,7 +468,7 @@ class Score(Drawable):
         elif self.which_game == "name_square":
             self.background_color = "navy"
             self.top_left_y = config.name_square_response_top_left_y + 120 + 16
-            self.width = 170
+            self.width = 340/2.0
             self.height = 120
             self.text_color = "black"
             self.border_thickness = 2
@@ -495,7 +495,10 @@ class Score(Drawable):
             self.border_thickness,
             self.border_color,
         )
-
+'''
+If I set typeCheckingMode to Standard, it will complain: Method "draw" overrides class "Drawable" in an incompatible manner
+Positional parameter count mismatch; base method has 12, but override has 2. However, it works.
+'''
 
 class GameState:
     def __init__(self):
@@ -636,9 +639,9 @@ class Timer(Drawable):
     def init_drawing_details(self):
         if self.which_game == "find_square":
             self.background_color = "darkgreen"  # "olive"
-            self.top_left_x = 30
+            self.top_left_x:float = 30
             self.top_left_y = config.find_square_score_top_left_y + 120 + 16
-            self.width = 340
+            self.width:float = 340
             self.height = 120
             self.text_color = "black"
             self.border_thickness = 1
@@ -646,9 +649,9 @@ class Timer(Drawable):
 
         elif self.which_game == "name_square":
             self.background_color = "navy"
-            self.top_left_x = 30 + 170 
+            self.top_left_x = 30 + 340/2.0
             self.top_left_y = config.name_square_response_top_left_y + 120 + 16
-            self.width = 170
+            self.width = 340/2.0
             self.height = 120
             self.text_color = "black"
             self.border_thickness = 2
