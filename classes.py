@@ -23,7 +23,7 @@ class Board:
     ):
         """
         Args:
-            top_left_x (float, optional): The x coordinate of the top left corner of the board. In pygame, the top left corner of the screen is of coordinates (0,0). Defaults to config.board_left_top_x.
+            top_left_x (float, optional): The x coordinate of the top left corner of the board. Defaults to config.board_left_top_x.
             top_left_y (float, optional): The y coordinate of the top left corner of the board. Defaults to config.board_left_top_y.
             length (float, optional): Defaults to config.board_length.
             side (str, optional): Whether the player wants to see the board from white's or black's side. Defaults to "white".
@@ -211,24 +211,22 @@ class Pieces:
         }
 
     def pieces_offsets_fun(self, side: str) -> Dict[str, List[int]]:
+        ''' This function will be needed to draw the pieces. It outputs the offsets for each piece. We start counting from 0 to 7
+        Example: the rook lives on the 0th and 7th column'''
+        to_return = {
+            "rook": [0, 7],
+                "knight": [1, 6],
+                "bishop": [2, 5]
+
+        }
         if side == "white":
-            return {
-                "rook": [0, 7],
-                "knight": [1, 6],
-                "bishop": [2, 5],
-                "queen": [3],
-                "king": [4],
-            }
+            to_return.update([("queen", [3]), ("king", [4])])
+            return to_return
+
         elif side == "black":
-            return {
-                "rook": [0, 7],
-                "knight": [1, 6],
-                "bishop": [2, 5],
-                "queen": [4],
-                "king": [3],
-            }
+            to_return.update([("queen", [4]), ("king", [3])])
+            return to_return
         else:
-            # Handle the case where side is neither "white" nor "black"
             raise ValueError(f"Invalid side: {side}")
 
     def draw(
@@ -247,7 +245,6 @@ class Pieces:
         for piece in pieces_except_pawn:
             white_piece = self.white_images_dict["w_" + piece]
             black_piece = self.black_images_dict["b_" + piece]
-            print(f"type of black_piece is {type(black_piece)}")
             piece_offsets: List[int] = self.pieces_offsets_fun(board_side)[piece]
             if board_side == "white":
                 first_row_piece: pygame.surface.Surface = white_piece
@@ -297,6 +294,7 @@ class Pieces:
 
 
 class RandomSquare:
+    """ This class creates a random square. It is used in both find/name square cases"""
     def __init__(self, board_side: str):
         # The attribute square is a string like a3 for example
         self.board_side = board_side
@@ -316,6 +314,8 @@ class RandomSquare:
         self.square = square
 
     def init_top_left_coord(self):
+        """ sets the coordinates of the top left corner of the randomly chosen square
+        """
         self.square_top_left_x, self.square_top_left_y = squares_coord(self.board_side)[
             self.square
         ]
@@ -346,6 +346,7 @@ class RandomSquare:
         board_left_top_y: int=config.board_left_top_y,
         board_length: int =config.board_length,
     ):
+        """ draws in the middle of the board which square the player should click on. Used in the find square case"""
         text_surface = config.big_font.render(self.square, True, "lavenderblush")
         text_rect = text_surface.get_rect(
             center=(
@@ -362,20 +363,21 @@ class RandomSquare:
         color: str="navy",
         border_thickness:int =4,
     ):
+        """ Draws a blue frame around a square. This is used in the name square case."""
         frame_rect = pygame.Rect(
             self.square_top_left_x, self.square_top_left_y, square_length, square_length
         )
         pygame.draw.rect(screen, color, frame_rect, border_thickness)
 
 
-# top left coordinates of each square
+
 def squares_coord(
     board_side: str,
     board_left_top_x: int=config.board_left_top_x,
     board_left_top_y: int=config.board_left_top_y,
     square_length: int=config.square_length,
 ) -> Dict[str, tuple[int,int]]:
-
+    """"Output: a dictionary with the top left coordinates of each square """
     columns_white = ["a", "b", "c", "d", "e", "f", "g", "h"]
     rows_white = ["1", "2", "3", "4", "5", "6", "7", "8"]
 
@@ -404,6 +406,9 @@ def squares_coord(
 
 
 class FindSquareResponse:
+    """ This class has the click position (the player's answer) in the find square case. If the answer is right (wrong), draw
+    a green (red) frame around the square."""
+    
     def __init__(self, was_correct_square_guessed: bool, click_x: int, click_y: int):
         self.correct_square_answered = was_correct_square_guessed
         self.click_x = click_x
@@ -435,8 +440,10 @@ class FindSquareResponse:
         return self.correct_square_answered
 
 
-# this function is used when player clicks on a wrong square. It is already gueranteed that the click was within board
+# this function is used in the FindSquareResponse. 
 def finding_square(board_side:str, click_x:int, click_y:int, square_length:int=config.square_length) -> Tuple[str,Tuple[int,int]]:
+    """ This function takes as input a click position and outputs which square the click was on. 
+    It is already gueranteed that the click was within board. """
     for key, value in squares_coord(board_side).items():
         if (
             value[0] <= click_x < value[0] + square_length
@@ -448,7 +455,7 @@ def finding_square(board_side:str, click_x:int, click_y:int, square_length:int=c
 # after already gueranteeing that the click was within the board, so it will always find a key,value pair to return.
 
 
-# Other classes who use the draw method, namely the score and input box classes, will inherit from this class.
+# A lot of other classes, like Score, Timer, ..., etc, will inherit from this class.
 class Drawable:
     def draw(
         self,
@@ -474,6 +481,9 @@ class Drawable:
             height + 2 * frame_thickness,
         )
         pygame.draw.rect(screen, border_color, frame_rect, border_thickness)
+        # Note the difference between frame_thickness and border_thickness:
+        # frame_thickness is how many pixels we want to add to the original inner_rect.
+        # border_thickness is how many pixels we want the border (of the frame_rect) to be thick.
         score_text = config.font.render(value_to_draw, True, text_color)
         text_rect = score_text.get_rect(
             center=(top_left_x + width / 2, top_left_y + height / 2)
@@ -539,16 +549,22 @@ Positional parameter count mismatch; base method has 12, but override has 2. How
 
 class GameState:
     def __init__(self):
-        self.find_or_name_square = True  # Find square
-        self.board_side_chosen = True  # white
-        self.click_find_square = False  # this click is expected from the player after random coordinates are shown.
-        self.something_typed = (
-            False  # this is to check if the player wrote an answer or not
+        """Attributes:
+        click_find_square:  whether the player clicked on some square within the board in the find square case. 
+        something_typed: whether the player typed an answer in the name square case.
+        allowed_to_read_input:  this is to allow reading a KEYDOWN input in the event listener
+        after_game_msg: If True, shows a score on the screen after a game. If False no score is shown.
+        """
+        self.find_or_name_square: bool = True  # Find square
+        self.board_side_chosen: bool = True  # white
+        self.click_find_square: bool = False  
+        self.something_typed: bool = (
+            False  
         )
-        self.allowed_to_read_input = False  # this is to allow reading a KEYDOWN input
-        self.find_square_time_running = False
-        self.name_square_time_running = False
-        self.after_game_msg = False
+        self.allowed_to_read_input: bool = False  
+        self.find_square_time_running: bool = False
+        self.name_square_time_running: bool = False
+        self.after_game_msg: bool = False
 
     def get_find_square_time_running(self):
         return self.find_square_time_running
@@ -557,6 +573,7 @@ class GameState:
         self.find_square_time_running = True
 
     def stop_timer_find_square(self):
+        """ Used when time is up"""
         self.find_square_time_running = False
 
     def get_name_square_time_running(self):
@@ -591,6 +608,7 @@ class GameState:
 
 
 class NameSquareResponse(Drawable):
+    """ This class represents the input of the player in the name square case."""
     def __init__(self, correct_square="", input_answer=""):
         self.correct_square = correct_square
         self.input_answer = input_answer
@@ -611,6 +629,7 @@ class NameSquareResponse(Drawable):
         self.border_thickness = 2
         self.border_color = "purple"
 
+    # input means the input from the player
     def set_input(self, some_value):
         self.input_answer = some_value
 
@@ -648,9 +667,9 @@ class NameSquareResponse(Drawable):
         )
 
     def force_answer_correct_format_and_evaluate(self):
+        """ This function forces the input to be a valid board square. Input should be 2 characters only"""
         columns = ["a", "b", "c", "d", "e", "f", "g", "h"]
         rows = ["1", "2", "3", "4", "5", "6", "7", "8"]
-        # print(f"before evaluating input is {self.input_answer}")
         if len(self.input_answer) == 1:
             if self.input_answer[0] not in columns:
                 self.reset_input_internal()
@@ -661,7 +680,6 @@ class NameSquareResponse(Drawable):
                 self.input_answer[1] in rows
             ):  # if answer is in correct form check if it correct
                 self.fun_is_correct_answer_given()
-        # print(f"after evaluating input is {self.input_answer}")
 
     def reset_correct_answer_given(self, new_value):
         self.is_correct_answer_given = new_value
@@ -715,6 +733,7 @@ class Timer(Drawable):
 
 
 class AfterGameMsg(Drawable):
+    """ After a game is played, I want to show the score"""
     def __init__(self, score):
         self.score = score
         self.init_drawing_details()
