@@ -10,13 +10,13 @@ Practicing this games helps:
 - Communicating your moves with others fast enough.
 
 ## Some demo images:
-Main menu:
-![Main menu](demo_images/img_1_resized.png)
-Find Square Game:
+**Main menu:**
+![Main menu](demo_images/img_1.png)
+**Find Square Game:**
 ![Find Square Game](demo_images/img_2_find_square.png)
-Name Square Game:
+**Name Square Game:**
 ![Name Square Game](demo_images/img_3_name_square.png)
-Score at the end of a game:
+**Score at the end of a game:**
 ![Score at the end of a game](demo_images/img_4_score.png)
 
  
