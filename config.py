@@ -11,19 +11,22 @@ board_left_top_y = 92
 board_length = 496
 square_length = 62
 
-# we have to initialize the font first. Otherwise, I will get an error
+# we have to initialize the font first. Otherwise, we will get an error
 pygame.font.init()
 font = pygame.font.Font("freesansbold.ttf", 20)
 big_font = pygame.font.Font("freesansbold.ttf", 150)
 
-# drawing the pieces
+# We need to resize the images later
 image_size = (60, 60)
 
-# The find square/name square buttons, the white/random/black buttons, and the start button all have height 60.
-# Margin between any two consecutive buttons is 16.
-highest_button_top_left_y = 166  # this corresponds to the find/name square buttons
-find_square_score_top_left_y = 220
-name_square_response_top_left_y = 220
+# corresponds to the find/name square rectangles
+highest_button_top_left_y = 166 
+# corresponds to the score rectangle shown in case of find square 
+find_square_score_top_left_y = 220 
+# corresponds to the reponse rectangle in case of name square
+name_square_response_top_left_y = 220 
 
-time_limit = 30.0  # in seconds
+# in seconds
+time_limit = 30.0  
+# Frames Per Second. Used to update the screen.
 FPS = 60

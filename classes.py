@@ -4,11 +4,13 @@ import pygame
 import random
 from typing import Tuple, List, Dict
 
-''' Things to know that repeat often:
+''' Good to know:
     - In pygame, the coordinates of the top left corner of the screen are (0,0). To draw any rectangle (let it be board, button, ...,etc) we 
-    define its top left coordinates.
+    need to define its top left coordinates.
     - if a button is already clicked on, let us call it 'activated'. Activated means that its .is_clicked attribute is set to True
     and its color is changed. 
+    - The find square/name square buttons, the white/random/black buttons, and the start button all have height 60.
+    - Margin between any two consecutive buttons is 16.
 '''
 
 class Board:
@@ -558,9 +560,7 @@ class GameState:
         self.find_or_name_square: bool = True  # Find square
         self.board_side_chosen: bool = True  # white
         self.click_find_square: bool = False  
-        self.something_typed: bool = (
-            False  
-        )
+        self.something_typed: bool = False 
         self.allowed_to_read_input: bool = False  
         self.find_square_time_running: bool = False
         self.name_square_time_running: bool = False

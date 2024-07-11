@@ -114,11 +114,18 @@ while run:
             click_x, click_y = pygame.mouse.get_pos()
 
             if start_button.button_clicked_fun(event.pos):
+                '''if a game is already in play; don't allow for a new game to start. This is actually
+                   not needed since once a game is in play, we don't even show the start button.   
+                '''
                 if (
                     start_button.get_clicked()
-                ):  # if a game is already in play; don't allow for a new game to start.
+                ):  
                     pass
                 else:
+                    '''
+                    In brief, when the start button is clicked on, we initialize the score, timer, time_bar, game_state,
+                    and random_square. We also choose a random side for the board if needed.
+                    '''
                     start_button.set_clicked()
 
                     time_left = config.time_limit
@@ -143,12 +150,15 @@ while run:
                             correct_square=random_square.get_square()
                         )
                         game_state.set_allowed_to_read_input(True)
+                    '''This line is needed in the case where a game is over and the final score message is shown. If the
+                        player clicks on one of the start buttons, we want the old score message to disappear'''
                     game_state.set_after_game_msg(False)
 
             else:
+                # if the start button has not been already clicked on
                 if (
                     start_button.get_clicked() == False
-                ):  # if the start button has not been already clicked on
+                ): 
                     if click_on_find_or_name_square_buttons(event.pos):
 
                         if find_square_button.button_clicked_fun(event.pos):
@@ -160,6 +170,8 @@ while run:
                             name_square_button.set_clicked()
                             find_square_button.unclick()
                         print(f"Board side: {board.get_board_side()}")
+                        '''This line is needed in the case where a game is over and the final score message is shown. If the
+                        player clicks on one of the find/name square buttons, we want the old score message to disappear'''
                         game_state.set_after_game_msg(False)
 
                     elif click_on_one_of_the_board_side_buttons(event.pos):
@@ -174,9 +186,10 @@ while run:
                             white_board_button.unclick()
                             random_board_button.set_clicked()
                             black_board_button.unclick()
+                            # an initial random side is chosen here.
                             board.set_random_side(
                                 True
-                            )  # an initial random side is chosen here.
+                            )  
 
                         else:
                             white_board_button.unclick()
@@ -188,6 +201,8 @@ while run:
                         print(
                             f"find square clicked: {find_square_button.get_clicked()}, name square clicked {name_square_button.get_clicked()}"
                         )
+                        '''This line is needed in the case where a game is over and the final score message is shown. If the
+                        player clicks on one of the board side buttons, we want the old score message to disappear'''
                         game_state.set_after_game_msg(False)
 
                 else:
@@ -213,7 +228,7 @@ while run:
                 and start_button.get_clicked()
                 and game_state.get_allowed_to_read_input()
             ):
-
+                # if input is the enter key
                 if event.key == pygame.K_RETURN:
                     name_square_response.set_input("")
                 elif event.key == pygame.K_BACKSPACE:
@@ -222,9 +237,10 @@ while run:
                     )
 
                 else:
+                    # limit the input to 2 characters
                     if (
                         len(name_square_response.get_input()) < 2
-                    ):  # limit the input to 2 characters
+                    ):  
                         name_square_response.set_input(
                             name_square_response.get_input() + event.unicode
                         )
@@ -241,14 +257,16 @@ while run:
     else:
         draw_all_buttons(screen)
     pieces.draw(screen, board.get_board_side())
-
+    # xor
     if (
         game_state.get_find_square_time_running()
         != game_state.get_name_square_time_running()
-    ):  # xor
+    ):  
+        # this is the time passed since the last frame. It is 1/60 = 0.016 sec
         time_passed = (
             clock.get_time() / 1000
-        )  # this is the time passed since the last frame. It is 1/60 = 0.016 sec
+        )  
+        # time_left is how much time is left for the player
         time_left -= time_passed
         score.draw(screen)
         timer.set_time(time_left)
@@ -256,21 +274,25 @@ while run:
         time_bar.draw(screen, time_left)
 
         if game_state.get_find_square_time_running():
+            # this is to keep drawing the coordinates on the screen until a click is made
             if game_state.get_click_find_square() is False:
                 random_square.draw_coord(screen)
                 pygame.display.update()
+            # if a click is made    
             else:
+                # if correct_square was guessed
                 if (
-                    find_square_response.get_correct_square_answered()  # if correct_square was guessed
+                    find_square_response.get_correct_square_answered()  
                 ):
                     # The following three instructions are to draw a green frame around a correctly guessed square
                     find_square_response.draw_frame_around_square(
                         screen, board.get_board_side()
                     )
                     pygame.display.flip()
-                    pygame.time.wait(50)  # wait for 50 ms
+                    # wait for 50 ms showing the green frame
+                    pygame.time.wait(50)  
+
                     board.draw(screen)
-                    print("---------------------------------------------")
                     if board.get_random_side():
                         board.set_board_side(random.choice(["white", "black"]))
 
@@ -281,6 +303,7 @@ while run:
                     pygame.display.update()
                     game_state.set_click_find_square(False)
 
+                # if player didn't click on the correct_square
                 else:
                     find_square_response.draw_frame_around_square(
                         screen, board.get_board_side()
@@ -289,18 +312,22 @@ while run:
                     pygame.display.update()
         else:
             name_square_response.draw_response_box(screen)
+            # this line forces the input to be a valid square
             name_square_response.force_answer_correct_format_and_evaluate()
+            # this is to keep showing the blue frame until a valid input is entered
             if game_state.get_something_typed() is False:
                 random_square.draw_frame_around_square(screen)
                 pygame.display.update()
+                
             else:
                 if name_square_response.get_is_correct_answer_given():
                     score.update_score()
                     print(f"score is {score.get_score()}")
+                    # prepare for a new square
                     name_square_response.reset_input()
                     name_square_response.reset_correct_answer_given(False)
                     board.draw(screen)
-                    print("---------------------------------------------")
+
                     if board.get_random_side():
                         board.set_board_side(random.choice(["white", "black"]))
 
@@ -312,6 +339,8 @@ while run:
                     pygame.display.update()
                     game_state.set_something_typed(False)
 
+                # We end up in this else statement if (1) the input is in a valid format, but wrong or (2) in case only
+                # one valid character is typed because the correct_answer_given is still set to False (its default value)              
                 else:
                     random_square.draw_frame_around_square(screen)
                     name_square_response.reset_input()
@@ -324,16 +353,18 @@ while run:
             game_state.set_click_find_square(False)
             game_state.set_something_typed(False)
             game_state.set_allowed_to_read_input(False)
-            print("Time is up!")
-            print(f"score is {score.get_score()} ")
+            # prepare to keep the score shown using the after_game_msg
             after_game_msg = AfterGameMsg(score.get_score())
             game_state.set_after_game_msg(True)
 
+    # if no timer is running and there is an after_game_msg (the score) to be shown, show it.
+    # Note that this score will be shown until a new click is made on either find/name square or board colors buttons.
     else:
         if game_state.after_game_msg:
             after_game_msg.draw_msg(screen)
 
     pygame.display.flip()
+    # the clock is used to update the screen each frame. FPS: frame per second.
     clock.tick(config.FPS)
 
 pygame.quit()
