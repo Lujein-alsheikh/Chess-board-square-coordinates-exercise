@@ -8,5 +8,12 @@ Library used: pygame
 Practicing this games helps:
 - Following the moves fast while listening to chess commentators.
 - Communicating your moves with others fast enough.
+
+## Some demo images:
+![Main menu](demo_images/img_1.png)
+![Find Square Game](demo_images/img_2_find_square.png)
+![Name Square Game](demo_images/img_3_name_square.png)
+![Score at the end of a game](demo_images/img_4_score.png)
+
  
 
